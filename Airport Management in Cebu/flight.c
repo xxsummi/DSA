@@ -28,7 +28,7 @@ Flight createFlight(String code, String aircraft, Time sched, Destination dest){
 }
 
 void displayFlight(Flight f){
-    printf("%s -  %s  - %2d:%2d - %s\n", f.code, f.aircraft, f.sched.hour, f.sched.min, f.dest.airport);
+    printf("%s -  %s  - %2d:%2d - %s - %d\n", f.code, f.aircraft, f.sched.hour, f.sched.min, f.dest.airport, f.dest.priority);
 }
 
 void displayFlights(PriorityQueue q){
@@ -45,7 +45,7 @@ void insertFlight(PriorityQueue *q, Flight f){
     
     while(n>0){
         int p=(n-1)/2;
-        if(isHigherPrio(q->list[p], q->list[n])){
+        if(isHigherPrio(q->list[n], q->list[p])){
             q->list[n]=q->list[p];
             q->list[p]=f;
         }
@@ -91,8 +91,6 @@ void getFlightsBefore(PriorityQueue *q, Flight flight, PriorityQueue *flights){
     }
     
     fclose(fp);
-    
-    
 }
 
 
