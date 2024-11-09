@@ -28,15 +28,17 @@ Flight createFlight(String code, String aircraft, Time sched, Destination dest){
 }
 
 void displayFlight(Flight f){
-    printf("%s -  %s  - %2d:%2d - %s - %d\n", f.code, f.aircraft, f.sched.hour, f.sched.min, f.dest.airport, f.dest.priority);
+    printf("%-4s -  %-7s - %2d:%2d - %s\n", f.code, f.aircraft, f.sched.hour, f.sched.min, f.dest.airport);
 }
 
 void displayFlights(PriorityQueue q){
-    printf("CODE - AIRCRAFT - TIME - DESTINATION\n");
-    for(int i=0; i<q.count; ++i){
+    printf("CODE - AIRCRAFT - TIME  - DESTINATION\n");
+    for(int i = 0; i < q.count; ++i){
         displayFlight(q.list[i]);
     }
 }
+
+
 
 void insertFlight(PriorityQueue *q, Flight f){
     if(q->count>=20) return;
@@ -63,6 +65,7 @@ bool isHigherPrio(Flight a, Flight b){
     }
 }
 
+
 void getFlightsBefore(PriorityQueue *q, Flight flight, PriorityQueue *flights){
     FILE *fp;
     int c=q->count;
@@ -71,10 +74,12 @@ void getFlightsBefore(PriorityQueue *q, Flight flight, PriorityQueue *flights){
     for(int i=0; i<c; ++i){
         if(fp!=NULL){
             Flight f=dequeue(q);
+            fwrite(&f, sizeof(Flight), 1, fp);
             if(strcmp(f.code, flight.code)==0){
+                // printf("Flight found ");
+                // displayFlight(f);
                 break;
             }
-            fwrite(&f, sizeof(Flight), 1, fp);
         }
     }
     
@@ -87,6 +92,8 @@ void getFlightsBefore(PriorityQueue *q, Flight flight, PriorityQueue *flights){
     if(fp != NULL){
         while(fread(&myflight, sizeof(Flight), 1, fp)){
             insertFlight(flights, myflight);
+            // printf("Inserted ");
+            // displayFlight(myflight);
         }
     }
     
@@ -115,8 +122,92 @@ Flight dequeue(PriorityQueue *q){
                 i=i*2+2;
             }
             
+        }else{
+            break;
         }
     }
-    
+    // printf("Dequeued ");
+    // displayFlight(f);
     return f;
 }
+
+
+
+
+
+
+
+
+// void getFlightsBefore(PriorityQueue *q, Flight flight, PriorityQueue *newQueue) {
+//     FILE *fp;
+//     fp = fopen("new_file.dat", "wb");
+
+//     if (fp != NULL) {
+//         int originalCount = q->count;
+//         for (int i = 0; i < originalCount; ++i) {
+//             Flight dequeuedFlight = dequeue(q);
+//             if (strcmp(dequeuedFlight.code, flight.code) == 0) {
+//                 break;
+//             }
+//             fwrite(&dequeuedFlight, sizeof(Flight), 1, fp);
+//         }
+//         fclose(fp);
+//     }
+
+//     Flight f;
+//     fp = fopen("new_file.dat", "rb");
+
+//     if (fp != NULL) {
+//         while (fread(&f, sizeof(Flight), 1, fp)) {
+//             insertFlight(newQueue, f);
+//         }
+//         fclose(fp);
+//     }
+// }
+
+// Flight dequeue(PriorityQueue *q){
+//     Flight f = q->list[0];  // Get the root flight from the priority queue
+//     q->count--;  // Decrease the count of the queue
+    
+//     int small = 0;
+//     int left = 0, right = 0;
+    
+//     while (1) {
+//         left = small * 2 + 1;  // Left child index
+//         right = small * 2 + 2;  // Right child index
+        
+//         // If both children exist
+//         if (right < q->count) {
+//             // Compare both children and find the one with the higher priority
+//             if (isHigherPrio(q->list[q->count], q->list[right]) && isHigherPrio(q->list[q->count], q->list[left])) {
+//                 break;  // The heap property is maintained
+//             }
+            
+//             // Choose the child with higher priority and continue down the heap
+//             if (isHigherPrio(q->list[left], q->list[right])) {
+//                 q->list[small] = q->list[left];
+//                 small = left;
+//             } else {
+//                 q->list[small] = q->list[right];
+//                 small = right;
+//             }
+//         } 
+//         // If only left child exists
+//         else if (left < q->count) {
+//             if (isHigherPrio(q->list[q->count], q->list[left])) {
+//                 break;  // Heap property is maintained
+//             } else {
+//                 q->list[small] = q->list[left];
+//                 small = left;
+//             }
+//         } 
+//         else {
+//             break;  // No children, heap property is maintained
+//         }
+//     }
+    
+//     // Place the last element in the correct position
+//     q->list[small] = q->list[q->count];
+    
+//     return f;  // Return the dequeued flight
+// }

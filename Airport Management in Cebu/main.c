@@ -18,10 +18,10 @@ int main(){
     list[8]=createFlight("8752", "NV46DF", createTime(14, 15), createDest("Ninoy Aquino International Airport", 1));
     list[9]=createFlight("6433", "N986JD", createTime(10, 20), createDest("Hilongos Airport", 5));
     
-    printf("CODE - AIRCRAFT - TIME - DESTINATION\n");
-    for(int i=0; i<10; ++i){
-        displayFlight(list[i]);
-    }
+    // printf("CODE - AIRCRAFT - TIME - DESTINATION\n");
+    // for(int i=0; i<10; ++i){
+    //     displayFlight(list[i]);
+    // }
     
     FILE *fp;
     
@@ -45,14 +45,15 @@ int main(){
             insertFlight(&q, f);
         }
     }
-    
     displayFlights(q);
     fclose(fp);
+    printf("\n");
     
     PriorityQueue flights;
     flights.count = 0;
-    getFlightsBefore(&q, list[5], &flights);
+    getFlightsBefore(&q, list[7], &flights);
     displayFlights(flights);
     
     return 0;
 }
+
